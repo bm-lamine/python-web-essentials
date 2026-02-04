@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres
+    container_name: pg_python
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: app_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - python_pg_data:/var/lib/postgresql
+
+  redis:
+    image: redis
+    container_name: rds_python
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - python_rds_data:/data
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mp_python
+    ports:
+      - "8025:8025" # Web UI
+      - "1025:1025" # SMTP server
+    volumes:
+      - python_mp_data:/data
+    restart: unless-stopped
+
+volumes:
+  python_pg_data:
+  python_rds_data:
+  python_mp_data:
